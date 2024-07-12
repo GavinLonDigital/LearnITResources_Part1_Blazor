@@ -1,0 +1,41 @@
+﻿@rendermode InteractiveServer
+@using ScraperDataDisplay.Entities;
+@using ScraperDataDisplay.Services;
+
+@page "/TIOBEIndex"
+
+@inject ITIOBEService TIOBEService;
+
+<h3>TIOBE Index</h3>
+
+    @if(tIOBERankedLanguages == null)
+    {
+        <h2>Loading...</h2>
+    }
+    else
+    {
+        <div>
+            @foreach (TIOBERankedLanguage tIOBERankedLanguage in tIOBERankedLanguages)
+            {
+                <div class="m-3">
+                    <span class="p-2">@tIOBERankedLanguage.RankOrder</span>
+                    <img src="@(TIOBEBaseURL + "/" + tIOBERankedLanguage.ImagePath)">
+                    <span class="p-2"><b>@tIOBERankedLanguage.LanguageName</b></span>
+                </div>
+            }
+
+        </div>
+    }
+
+
+@code {
+    private List<TIOBERankedLanguage> tIOBERankedLanguages = null;
+    private const string TIOBEBaseURL = "https://www.tiobe.com";
+
+    protected override async Task OnInitializedAsync()
+    {
+        tIOBERankedLanguages = await TIOBEService.GetTIOBERankedLanguages();
+    }
+
+
+}

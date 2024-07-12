@@ -1,0 +1,44 @@
+﻿@rendermode InteractiveServer
+@using ScraperDataDisplay.Models;
+@using ScraperDataDisplay.Services;
+
+@page "/Amazon"
+@inject IAmazonService amazonService
+
+@if(amazonBooksByLanguages == null)
+{
+    <h2>Loading...</h2>
+}
+else
+{
+    <div class="mb-2">
+        <h1 style="text-align:center;">
+            TIOBE Programming Language Rankings with <span><img src="images/Amazon.png" style="height:150px;"/></span> Books
+        </h1>
+    </div>
+    <div>
+        @foreach(AmazonBooksByLanguage l in amazonBooksByLanguages)
+        {
+            <div class="m-b">
+                <span class="p-2"><b>@l.RankOrder</b></span>
+                <img src="@(TIOBEBaseURL + "/" + l.ImagePath)"/>
+                <span class="p-2"><b>@l.LanguageName</b></span>
+            </div>
+            <AmazonBooks LangId="@l.Id" Books="@l.AmazonBooks" />
+        }
+
+    </div>
+
+}
+
+
+@code {
+    private List<AmazonBooksByLanguage> amazonBooksByLanguages = null!;
+    private const string TIOBEBaseURL = "https://www.tiobe.com";
+
+    protected override async Task OnInitializedAsync()
+    {
+        amazonBooksByLanguages = await amazonService.GetAmazonBooksGroupedByLanguage();
+    }
+
+}

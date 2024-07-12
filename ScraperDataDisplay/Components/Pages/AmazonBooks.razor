@@ -1,0 +1,59 @@
+﻿@rendermode InteractiveServer
+@using ScraperDataDisplay.Entities
+
+@if(Books != null && Books.Count > 0)
+{
+    <div id="carouselCaptions@(LangId)" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for(var x = 0; x < Books.Count; x++)
+            {
+                var books = Books.Skip(x * 4).Take(4);
+
+                @if(books !=null && books?.Count() > 0)
+                {
+                    var cssClassActive = "";
+                    
+                    @if(x == 0)
+                    {
+                        cssClassActive = "active";
+                    }
+                    <div class="carousel-item @cssClassActive" style="height:290px;" >
+                        <div class="container-fluid">
+                            <div class="row">
+                                @foreach(var book in books)
+                                {
+                                    <AmazonBookLink Book="@book" />
+                                    <AmazonBookDetails Book="@book"/>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselCaptions@(LangId)" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselCaptions@(LangId)" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+
+@code {
+   
+    [Parameter]
+    public int LangId { get; set; }
+   
+    [Parameter]
+    public List<AmazonBook>? Books { get; set; }
+
+}
